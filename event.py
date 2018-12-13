@@ -43,14 +43,14 @@ class Event:
 		return self.eventData
 
 	def __str__(self):
-		return "eventId: " + self.eventId + \
-		"\neventTime: " + self.eventTime + \
-		"\neventTypeId: " + self.eventTypeId + \
-		"\neventTypeName: " + self.eventTypeName + \
-		"\nusername: " + self.username + \
-		"\nimpersonator: " + str(self.impersonator) + \
-		"\neventDefinitionId: " + str(self.eventDefinitionId) + \
-		"\neventName: " + str(self.eventName)
+		return 	"          eventId: " + self.eventId + \
+				"\n        eventTime: " + self.eventTime + \
+				"\n      eventTypeId: " + self.eventTypeId + \
+				"\n    eventTypeName: " + self.eventTypeName + \
+				"\n         username: " + self.username + \
+				"\n     impersonator: " + str(self.impersonator) + \
+				"\neventDefinitionId: " + str(self.eventDefinitionId) + \
+				"\n        eventName: " + str(self.eventName)
 
 
 
@@ -89,8 +89,36 @@ class FastPurgeEvent(Event):
 
 	def __str__(self):
 		return Event.__str__(self) + \
-		"\npurgeAction: " + str(self.purgeAction) + \
-		"\npurgeNetwork: " + str(self.purgeNetwork) + \
-		"\npurgeRequest: " + str(self.purgeRequest) + \
-		"\npurgeResponse: " + str(self.purgeResponse)
+				"\n      purgeAction: " + str(self.purgeAction) + \
+				"\n     purgeNetwork: " + str(self.purgeNetwork) + \
+				"\n     purgeRequest: " + str(self.purgeRequest) + \
+				"\n    purgeResponse: " + str(self.purgeResponse)
+
+
+
+class PropertyManagerEvent(Event):
+
+	def __init__(self, eventId = None):
+		Event.__init__(self)
+
+	def parseJson(self, json):
+		Event.parseJson(self, json)
+		eventData = json['eventData']
+		for kv in eventData:
+			k = kv['key']
+			v = kv['value']
+			if k == 'PROPERTY_NAME':
+				self.propertyName = v
+			if k == 'PROPERTY_VERSION':
+				self.propertyVersion = v
+			if k == 'USERNAME':
+				self.username = v
+
+	def __str__(self):
+		return Event.__str__(self) + \
+				"\n     propertyName: " +  str(self.propertyName) + \
+				"\n  propertyVersion: " +  str(self.propertyVersion) + \
+				"\n         username: " +  str(self.username)
+
+
 
