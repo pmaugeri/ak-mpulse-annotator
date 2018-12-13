@@ -1,0 +1,37 @@
+        {
+            "eventId": "XXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXX",
+            "eventTime": "2018-12-12T16:37:02.621Z",
+            "eventData": [
+                {
+                    "key": "Purge action",
+                    "value": "invalidate"
+                },
+                {
+                    "key": "Purge network",
+                    "value": "production"
+                },
+                {
+                    "key": "Purge request",
+                    "value": "fi-api.ccu.akadns.net. Objects to Purge - https://www.customerdomain.com/en/, https://www.customerdomain.com/en, https://www.customerdomain.com/fr/, https://www.customerdomain.com/fr, https://www.customerdomain.com/es/, https://www.customerdomain.com/es, https://www.customerdomain.com/de/, https://www.customerdomain.com/de, https://www.customerdomain.com/pt/, https://www.customerdomain.com/pt, https://www.customerdomain.com/ja/, https://www.customerdomain.com/ja, https://www.customerdomain.com/zh/, https://www.customerdomain.com/zh, https://www.customerdomain.com/ru/, https://www.customerdomain.com/ru"
+                },
+                {
+                    "key": "Purge response",
+                    "value": "{\"httpStatus\":201,\"detail\":\"Request accepted\",\"estimatedSeconds\":5,\"purgeId\":\"XXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXX\",\"supportId\":\"XXXXXXXXX-XXXXXXXXX\",\"pingAfterSeconds\":0}"
+                },
+                {
+                    "key": "pulsar_host",
+                    "value": "p4-docker50.extranet.akamai.com"
+                }
+            ],
+            "eventType": {
+                "eventTypeId": "184",
+                "eventTypeName": "Fast Purge",
+                "eventDefinition": {
+                    "eventDefinitionId": "894488",
+                    "eventName": "Purge by URL",
+                    "eventDescription": "Purge by URL.  This is logged after we get a response from backend"
+                }
+            },
+            "impersonator": false,
+            "username": "user@customerdomain.com"
+        }
