@@ -1,0 +1,3 @@
+;eventTypeId,className
+141,PropertyManagerEvent
+184,FastPurgeEvent
