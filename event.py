@@ -1,12 +1,23 @@
+import datetime
+
 
 class Event:
 
 	def __init__(self, eventId = None):
 		self.eventId = eventId
 
+	def matchCriteria(self, criteria):
+		return True
+
 	def parseJson(self, json):
+		"""Parse a JSON object describing an Event.
+		:param json: the Event to be parsed
+		:type json: a python JSON object
+		"""
 		self.eventId = json['eventId']
-		self.eventTime = json['eventTime']
+		epoch_time = json['eventTime']
+		dt = datetime.datetime.strptime(epoch_time, "%Y-%m-%dT%H:%M:%S.%fZ")		
+		self.eventTime = str(int(dt.strftime("%s")) * 1000)
 		self.eventTypeId = json['eventType']['eventTypeId']
 		self.eventTypeName = json['eventType']['eventTypeName']
 		self.eventDefinitionId = json['eventType']['eventDefinition']['eventDefinitionId']
@@ -19,6 +30,10 @@ class Event:
 		return self.eventId
 
 	def getEventTime(self):
+		"""Return the event time in Epoch time (in milliseconds)
+		:param json: the Event to be parsed
+		:returns: event epoch time (in milliseconds)
+		"""
 		return self.eventTime
 
 	def getEventTypeId(self):
@@ -52,13 +67,31 @@ class Event:
 				"\neventDefinitionId: " + str(self.eventDefinitionId) + \
 				"\n        eventName: " + str(self.eventName)
 
+	def getAnnotationTitle(self):
+		"""Return the annotation title corresponding to this event and ready to be used in mPulse Annotation API. 
+		By default it returns the eventName attribute.
+		:returns: a python String object
+		"""		
+		return self.eventName
 
+	def getAnnotationText(self):
+		"""Return the annotation text corresponding to this event and ready to be used in mPulse Annotation API.
+		:returns: a python String object
+		"""		
+		return ""
 
 
 class FastPurgeEvent(Event):
 
 	def __init__(self, eventId = None):
 		Event.__init__(self)
+
+	def matchCriteria(self, criteria):
+		Event.matchCriteria(self, criteria)
+		for cpcode in criteria.split(';'):
+			if cpcode in self.purgeRequest:
+				return True
+		return False
 
 	def getPurgeAction(self):
 		return self.purgeAction
@@ -94,12 +127,26 @@ class FastPurgeEvent(Event):
 				"\n     purgeRequest: " + str(self.purgeRequest) + \
 				"\n    purgeResponse: " + str(self.purgeResponse)
 
+	def getAnnotationText(self):
+		"""Return the annotation text corresponding to this event and ready to be used in mPulse Annotation API.
+		:returns: a python String object
+		"""		
+		return "Purge request on " + self.purgeNetwork + " network:\n" + self.purgeRequest
 
 
 class PropertyManagerEvent(Event):
 
 	def __init__(self, eventId = None):
 		Event.__init__(self)
+
+	def matchCriteria(self, criteria):
+		Event.matchCriteria(self, criteria)
+		if criteria == '':
+			return True
+		for prop in criteria.split(';'):
+			if prop == self.propertyName:
+				return True
+		return False
 
 	def parseJson(self, json):
 		Event.parseJson(self, json)
@@ -120,5 +167,9 @@ class PropertyManagerEvent(Event):
 				"\n  propertyVersion: " +  str(self.propertyVersion) + \
 				"\n         username: " +  str(self.username)
 
-
+	def getAnnotationText(self):
+		"""Return the annotation text corresponding to this event and ready to be used in mPulse Annotation API.
+		:returns: a python String object
+		"""		
+		return "" + self.propertyName + " v" + self.propertyVersion
 
