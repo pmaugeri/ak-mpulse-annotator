@@ -26,7 +26,9 @@ Once project is downloaded and configured (see *Configuration* section below), t
 
 ### Configuration
 
-1. save your Akamai OPEN Client API credentials in an **.edgerc** file located in the current working directory, following this format:
+**File .edgerc**
+
+Save your Akamai OPEN Client API credentials in an **.edgerc** file located in the current working directory, following this format:
 
 ```
 [edgercsection]
@@ -37,10 +39,24 @@ access_token = akab-XXXXXXX-XXXXXXX
 max-body = 131072
 ```
 
-2. define the events you want to select for creating the annotations in the file events-selector.csv that is a 3-column CSV file with this format:
+**File events-selector.csv**
+
+Define the events you want to select for creating the annotations in the file events-selector.csv. This file is a 3-column CSV file with the following format:
 
 ```
 <event definition ID>,<Event class name>,<filter criteria>
+```
+
+Example: you want to select activation of Property Manager configurations (Event Definition ID = 943951) for the configuration myconfig.domain.com: 
+
+```
+943951,PropertyManagerEvent,myconfig.domain.com
+```
+
+Example 2: you want to select purge by CP Code events (Event Definition ID = 229233) on CP Code 123456:
+
+```
+229233,FastPurgeEvent,123456
 ```
 
 ### Usage
