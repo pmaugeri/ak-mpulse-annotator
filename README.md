@@ -15,15 +15,18 @@ See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
-**Software**
-
 * Python v2.7.10 or higher
 * Akamai OPEN Edgegrid for Python - [AkamaiOPEN-edgegrid-python](https://github.com/akamai/AkamaiOPEN-edgegrid-python)
-
-**Configuration**
-
 * an Akamai OPEN Client API with a read access priviledge to Event Viewer API. 
-These credentials should be defined in an **.edgerc** file located in the current working directory, and following this format:
+* an Akamai mPulse tenant and user account that has API access enable
+
+### Installing
+
+No specific installing instructions for this project apart from the creation of the .edgerc file.
+
+### Configuration
+
+1. save your Akamai OPEN Client API credentials in an **.edgerc** file located in the current working directory, following this format:
 
 ```
 [edgercsection]
@@ -34,16 +37,15 @@ access_token = akab-XXXXXXX-XXXXXXX
 max-body = 131072
 ```
 
-* an Akamai mPulse tenant and user account that has API access enable
+2. define the events you want to select for creating the annotations in the file events-selector.csv that is a 3-column CSV file with this format:
 
-### Installing
-
-No specific installing instructions for this project apart from the creation of the .edgerc file.
-
+```
+<event definition ID>,<Event class name>,<filter criteria>
+```
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Authors
 
