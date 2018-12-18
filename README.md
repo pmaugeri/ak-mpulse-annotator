@@ -22,7 +22,7 @@ See deployment for notes on how to deploy the project on a live system.
 
 ### Installing
 
-No specific installing instructions for this project apart from the creation of the .edgerc file.
+Once project is downloaded and configured (see *Configuration* section below), there is no specific installation needed for this project.
 
 ### Configuration
 
