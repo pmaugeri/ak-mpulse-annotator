@@ -49,7 +49,6 @@ class MPulseAPIHandler:
 		else:
 			payload = "{\"title\":\"" + title + "\", \"start\": \"" + str(start) + "\", \"end\":\"" + str(end) + "\", \"text\":\"" + text + "\"}"
 		self.logger.info("adding new annotation: " + payload)	
-		self.logger.info(token)	
 
 		url = "https://mpulse.soasta.com/concerto/mpulse/api/annotations/v1"
 		result = requests.post(url, data = payload, headers={'Content-Type':'application/json', 'X-Auth-Token': token })
