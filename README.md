@@ -47,16 +47,16 @@ Define the events you want to select for creating the annotations in the file ev
 <event definition ID>,<Event class name>,<filter criteria>
 ```
 
-Example: you want to select activation of Property Manager configurations (Event Definition ID = 943951) for the configuration myconfig.domain.com: 
+Example: you want to select activation of Property Manager configurations (Event Definition ID = 943951) for the configurations myconfig.domain.com and myotherconfig.domain.com: 
 
 ```
-943951,PropertyManagerEvent,myconfig.domain.com
+943951,PropertyManagerEvent,myconfig.domain.com;myotherconfig.domain.com
 ```
 
-Example 2: you want to select purge by CP Code events (Event Definition ID = 229233) on CP Code 123456:
+Example 2: you want to select purge by CP Code events (Event Definition ID = 229233) on CP Code 123456 and on CP Code 654321:
 
 ```
-229233,FastPurgeEvent,123456
+229233,FastPurgeEvent,123456;654321
 ```
 
 ### Usage
