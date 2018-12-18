@@ -49,7 +49,7 @@ You can invoke the mpulse-annotator with the following command line parameters:
 
 * **-s:** the section name in your .edgerc file
 * **-t:** the starting time to retrieve events from
-* **-a:** API token
+* **-a:** the mPulse API token
 * **-m:** mPulse tenant name
 
 Example:
