@@ -43,6 +43,22 @@ max-body = 131072
 <event definition ID>,<Event class name>,<filter criteria>
 ```
 
+### Usage
+
+You can invoke the mpulse-annotator with the following command line parameters:
+
+* **-s:** the section name in your .edgerc file
+* **-t:** the starting time to retrieve events from
+* **-a:** the mPulse API token
+* **-m:** mPulse tenant name
+
+Example:
+
+```
+./mpulse-annotator.py -s edgercsection -t 2018-12-1T08:00:00 -a XXXX-XXXX-XXXX-XXXX-XXXX -m "MPULSE TENANT"
+```
+
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
