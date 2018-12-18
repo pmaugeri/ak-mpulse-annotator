@@ -15,7 +15,7 @@ import csv
 
 
 # Default filename for logger
-DEFAULT_LOGGER_FILE = 'logs/mpulse-annotator.log'
+DEFAULT_LOGGER_FILE = 'mpulse-annotator.log'
 
 # Default filename for the events selector configuration file
 EVENTS_SELECTOR_FILE = 'events-selector.csv'
@@ -202,7 +202,6 @@ def main(argv):
 		print "Text: " + e.getAnnotationText()
 		print "Start: " + e.getEventTime()
 		print "----------------"
-
 
 
 
