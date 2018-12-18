@@ -25,7 +25,7 @@ class MPulseAPIHandler:
 		if (result.status_code == 200):
 			json_data = result.json()
 			self.logger.info('mPulse security token returned: ' + str(json_data['token']) )
-			return json_data
+			return str(json_data['token'])
 		else:
 			self.logger.error('Error ' + str(result.status_code) + ': no security token returned')
 			return None
@@ -52,7 +52,7 @@ class MPulseAPIHandler:
 		self.logger.info(token)	
 
 		url = "https://mpulse.soasta.com/concerto/mpulse/api/annotations/v1"
-		result = requests.post(url, data = payload, headers={'Content-Type':'application/json', 'X-Auth-Token': '3ff8bdca-89e-134-4910-8a92-0ac7ecfd4a6f' })
+		result = requests.post(url, data = payload, headers={'Content-Type':'application/json', 'X-Auth-Token': token })
 		if (result.status_code == 200):
 			json_data = result.json()
 			self.logger.info('annotation successfully added')
