@@ -131,7 +131,7 @@ class FastPurgeEvent(Event):
 		"""Return the annotation text corresponding to this event and ready to be used in mPulse Annotation API.
 		:returns: a python String object
 		"""		
-		return "Purge request on " + self.purgeNetwork + " network:\n" + self.purgeRequest
+		return "Purge request on " + self.purgeNetwork + " network: " + self.purgeRequest
 
 
 class PropertyManagerEvent(Event):
