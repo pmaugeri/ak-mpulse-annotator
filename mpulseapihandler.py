@@ -58,3 +58,4 @@ class MPulseAPIHandler:
 			self.logger.info('annotation successfully added')
 		else:
 			self.logger.error('Error ' + str(result.status_code) + ': annotation not added!')
+
