@@ -22,7 +22,7 @@ See deployment for notes on how to deploy the project on a live system.
 
 ### Installing
 
-Once project is downloaded and configured (see *Configuration* section below), there is no specific installation needed for this project.
+Once project is downloaded and configured (see *Configuration* section below), there is no additional installation instruction needed.
 
 ### Configuration
 
