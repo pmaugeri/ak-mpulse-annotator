@@ -47,10 +47,10 @@ max-body = 131072
 
 You can invoke the mpulse-annotator with the following command line parameters:
 
-* **-s** the section name in your .edgerc file
-* **-t** the starting time to retrieve events from
-* **-a** API token
-* **-m** mPulse tenant name
+* **-s:** the section name in your .edgerc file
+* **-t:** the starting time to retrieve events from
+* **-a:** API token
+* **-m:** mPulse tenant name
 
 Example:
 
