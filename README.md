@@ -59,6 +59,14 @@ Example 2: you want to select purge by CP Code events (Event Definition ID = 229
 229233,FastPurgeEvent,123456;654321
 ```
 
+Example 3: you may combine multiple event selectors:
+
+```
+943951,PropertyManagerEvent,myconfig.domain.com;myotherconfig.domain.com
+229233,FastPurgeEvent,123456;654321
+```
+
+
 ### Usage
 
 You can invoke the mpulse-annotator with the following command line parameters:
