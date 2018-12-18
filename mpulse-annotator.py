@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import sys, getopt
 import requests
@@ -179,10 +179,9 @@ def main(argv):
 	     mpulsetenant = arg
 	     l.info("using mPulse tenant: " + mpulsetenant)
 
-	#mpulse = MPulseAPIHandler(l)
-	#mpulse.getSecurityToken(apitoken, mpulsetenant)
-	#sys.exit(0)
-
+	# Get a mPulse API handler and retrieve a security token valid for this session
+	mpulse = MPulseAPIHandler(l)
+	mpulsetoken = mpulse.getSecurityToken(apitoken, mpulsetenant)
 
 	# Create a dictionary to select events during parsing of API call responses
 	l.info('loading events selector...')
@@ -201,10 +200,17 @@ def main(argv):
 		print "Title: " + e.getAnnotationTitle()
 		print "Text: " + e.getAnnotationText()
 		print "Start: " + e.getEventTime()
+		mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventTime())
 		print "----------------"
-
 
 
 
 if __name__ == "__main__":
    main(sys.argv[1:])
+
+
+
+
+
+
+
