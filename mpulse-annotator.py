@@ -23,7 +23,7 @@ EVENTS_SELECTOR_FILE = 'events-selector.csv'
 
 # Global variables
 global l
-global baseurl
+global baseUrl
 
 
 def initLogger():
@@ -93,7 +93,7 @@ def getEvents(sess, start, eventsSelector):
 	:rtype: a Dictionnary of Event objects
 	"""
 	global l
-	global baseurl
+	global baseUrl
 	events = []
 	
 	# Build the initial URL path to make API call
@@ -102,7 +102,7 @@ def getEvents(sess, start, eventsSelector):
 		url_path = url_path + '?start=' + start
 	
 	l.info("request EventViewer v1 API on URL " + url_path)
-	result = sess.get(urljoin(baseurl, url_path))
+	result = sess.get(urljoin(baseUrl, url_path))
 	if (result.status_code == 200):
 		data = result.json()
 		l.info(str(len(data['events'])) + " event(s) returned")
@@ -123,7 +123,7 @@ def getEvents(sess, start, eventsSelector):
 			if next_href:
 				url_path = next_href
 				l.info("request EventViewer v1 API on URL " + url_path)
-				result = sess.get(urljoin(baseurl, url_path))
+				result = sess.get(urljoin(baseUrl, url_path))
 				if (result.status_code == 200):
 					data = result.json()
 					l.info(str(len(data['events'])) + " event(s) returned")
@@ -146,7 +146,7 @@ def getEvents(sess, start, eventsSelector):
 def main(argv):
 	
 	global l
-	global baseurl
+	global baseUrl
 
 	initLogger()
 	l.info("mpulse-annotator is starting...")
@@ -155,21 +155,30 @@ def main(argv):
 
 
 	# Read and parse the command line arguments
-	edgercSection = ''
-	fromtime = ''
-	apitoken = ''
-	mpulsetenant = ''
+	baseUrl = ''       # -u command line argument
+	clientToken = ''   # -c command line argument
+	clientSecret = ''  # -s command line argument
+	accessToken = ''   # -o command line argument
+	fromtime = ''      # -t command line argument
+	apitoken = ''      # -a command line argument
+	mpulsetenant = ''  # -m command line argument
 	try:
-	  opts, args = getopt.getopt(argv,"hs:t:a:m:",["section=","fromtime=","apitoken","mpulsetenant"])
+	  opts, args = getopt.getopt(argv,"hu:c:s:o:t:a:m:",["baseurl=","clienttoken", "clientsecret","accesstoken","fromtime=","apitoken","mpulsetenant"])
 	except getopt.GetoptError:
-	  print 'mpulse-annotator.py -s <section> -t <fromtime> -a <apitoken> -m <mpulsetenant>'
+	  print 'mpulse-annotator.py -u <baseurl> -c <clienttoken> -s <clientsecret> -o <accesstoken> -t <fromtime> -a <apitoken> -m <mpulsetenant>'
 	  sys.exit(2)
 	for opt, arg in opts:
 	  if opt == '-h':
-	     print 'mpulse-annotator.py -s <section> -t <fromtime> -a <apitoken> -m <mpulsetenant>'
+	     print 'mpulse-annotator.py -u <baseurl> -c <clienttoken> -s <clientsecret> -o <accesstoken> -t <fromtime> -a <apitoken> -m <mpulsetenant>'
 	     sys.exit()
-	  elif opt in ("-s", "--section"):
-	     edgercSection = arg
+	  elif opt in ("-u", "--baseurl"):
+	     baseUrl = 'https://%s' % arg
+	  elif opt in ("-c", "--clienttoken"):
+	     clientToken = arg
+	  elif opt in ("-s", "--clientsecret"):
+	     clientSecret = arg
+	  elif opt in ("-o", "--accesstoken"):
+	     accessToken = arg
 	  elif opt in ("-t", "--fromtime"):
 	     fromtime = arg
 	  elif opt in ("-a", "--apitoken"):
@@ -187,11 +196,10 @@ def main(argv):
 	l.info('loading events selector...')
 	eventsSelector = parseEventsSelector(EVENTS_SELECTOR_FILE)
 
-	edgerc = EdgeRc('.edgerc')
-	baseurl = 'https://%s' % edgerc.get(edgercSection, 'host')
 	sess = requests.Session()
-	l.info("session created on " + baseurl + ", using .edgerc section '" + edgercSection + "' and start time '" + fromtime + "'")
-	sess.auth = EdgeGridAuth.from_edgerc(edgerc, edgercSection)
+	l.info("session created on " + baseUrl + ", using client token '" + clientToken + "' and start time '" + fromtime + "'")
+	#sess.auth = EdgeGridAuth.from_edgerc(edgerc, edgercSection)
+	sess.auth = EdgeGridAuth(client_token = clientToken, client_secret = clientSecret, access_token = accessToken)
 	events = getEvents(sess, fromtime, eventsSelector)
 
 	for e in events:

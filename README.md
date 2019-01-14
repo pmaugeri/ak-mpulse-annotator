@@ -26,19 +26,6 @@ Once project is downloaded and configured (see *Configuration* section below), t
 
 ### Configuration
 
-**File .edgerc**
-
-Save your Akamai OPEN Client API credentials in an **.edgerc** file located in the current working directory, following this format:
-
-```
-[edgercsection]
-host = XXXX-XXXXXXX-XXXXXXX.luna.akamaiapis.net
-client_token = XXXXXXX-XXXXXXX-XXXXXXX
-client_secret = XXXXXXX
-access_token = akab-XXXXXXX-XXXXXXX 
-max-body = 131072
-```
-
 **File events-selector.csv**
 
 Define the events you want to select for creating the annotations in the file events-selector.csv. This file is a 3-column CSV file with the following format:
@@ -71,15 +58,20 @@ Example 3: you may combine multiple event selectors:
 
 You can invoke the mpulse-annotator with the following command line parameters:
 
-* **-s:** the section name in your .edgerc file
+* **-u:** the base URL (host for the Client API)
+* **-c:** the client Token
+* **-s:** the client secret
+* **-o:** the access token
 * **-t:** the starting time to retrieve events from
 * **-a:** the mPulse API token
 * **-m:** mPulse tenant name
 
-Example:
+
+
+Example ('X' characters are hidden characters):
 
 ```
-./mpulse-annotator.py -s edgercsection -t 2018-12-1T08:00:00 -a XXXX-XXXX-XXXX-XXXX-XXXX -m "MPULSE TENANT"
+./mpulse-annotator.py -u akab-XXXX.luna.akamaiapis.net -c akab-XXXXX -s XXXXX -o akab-XXXXX-XXXXX -t 2018-12-1T08:00:00 -a XXXX-XXXX-XXXX-XXXX-XXXX -m "MPULSE TENANT"
 ```
 
 
