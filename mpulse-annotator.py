@@ -4,8 +4,9 @@ import sys, getopt
 import requests
 from akamai.edgegrid import EdgeGridAuth, EdgeRc
 from urlparse import urljoin
-from event import Event, FastPurgeEvent, PropertyManagerEvent
+from event import Event, FastPurgeEvent, PropertyManagerEvent, EccuEvent
 from mpulseapihandler import MPulseAPIHandler
+from datetime import datetime
 import sys
 import json
 import logging
@@ -20,6 +21,12 @@ DEFAULT_LOGGER_FILE = 'mpulse-annotator.log'
 # Default filename for the events selector configuration file
 EVENTS_SELECTOR_FILE = 'events-selector.csv'
 
+# Events Selector ID
+EVENTS_SELECTOR_ECCU         = '000001'
+EVENTS_SELECTOR_PMACTIVATION = '238252'
+EVENTS_SELECTOR_FASTPURGE    = '229233'
+
+
 
 # Global variables
 global l
@@ -33,7 +40,7 @@ def initLogger():
 	"""
 	global l
 	l = logging.getLogger("Rotating Log")
-	l.setLevel(logging.INFO)
+	l.setLevel(logging.DEBUG)
 	handler = RotatingFileHandler(DEFAULT_LOGGER_FILE, maxBytes=10*1024*1024, backupCount=10)
 	formatter = logging.Formatter('%(asctime)-12s [%(levelname)s] %(message)s')  
 	handler.setFormatter(formatter)
@@ -63,7 +70,10 @@ def parseEventsSelector(csvfile):
 				selector[row[0]] = [ FastPurgeEvent, row[2] ]
 			if row[1] == 'PropertyManagerEvent':
 				selector[row[0]] = [ PropertyManagerEvent, row[2] ]
+			if row[1] == 'EccuEvent':
+				selector[row[0]] = [ EccuEvent, row[2] ]
 	return selector
+
 
 def parseEvents(json_object, eventsSelector):
 	""" Parse a JSON object with a list of events.
@@ -83,8 +93,42 @@ def parseEvents(json_object, eventsSelector):
 				events.append(e)
 	return events
 
+def parseEccuEvents(json_object, eventsSelector):
+	events = []
+	for event in json_object:
+		eventDefinitionId = EVENTS_SELECTOR_ECCU
+		if eventDefinitionId in eventsSelector:
+			e = eventsSelector[eventDefinitionId][0]() # Instanciate object using dynamic class name
+			e.parseJson(event)
+			if e.matchCriteria(eventsSelector[eventDefinitionId][1]):
+				events.append(e)
+	return events
 
-def getEvents(sess, start, eventsSelector):
+
+def getECCUEvents(sess, start, eventsSelector):
+	""" Query the ECCU API and return a list of Event objects
+	"""
+	global l
+	global baseUrl
+	events = []
+
+	# Build the initial URL path to make API call
+	url_path = '/eccu-api/v1/requests'
+
+	l.info("request Enhanced Content Control Utility API v1 on URL " + url_path)
+	result = sess.get(urljoin(baseUrl, url_path))
+	if (result.status_code == 200):
+		data = result.json()
+		l.info(str(len(data['requests'])) + " event(s) returned")
+		selectedEvents = parseEccuEvents(data['requests'], eventsSelector)
+		events = events + selectedEvents
+
+	l.info("Total: " + str(len(events)) + " event(s) selected and parsed after start date '" + start + "'")
+	return events
+
+
+
+def getEventViewerEvents(sess, start, eventsSelector):
 	""" Query EventCenter API and return a list of Event objects.
 	:param sess: a session to send HTTP request to PAPI.
 	:type sess: Session
@@ -200,17 +244,27 @@ def main(argv):
 	l.info("session created on " + baseUrl + ", using client token '" + clientToken + "' and start time '" + fromtime + "'")
 	#sess.auth = EdgeGridAuth.from_edgerc(edgerc, edgercSection)
 	sess.auth = EdgeGridAuth(client_token = clientToken, client_secret = clientSecret, access_token = accessToken)
-	events = getEvents(sess, fromtime, eventsSelector)
+	
+	#events = getEventViewerEvents(sess, fromtime, eventsSelector)
+	#for e in events:
+	#	print e
+	#	print "-- Annotation --"
+	#	print "Title: " + e.getAnnotationTitle()
+	#	print "Text: " + e.getAnnotationText()
+	#	print "Start: " + e.getEventStartTime()
+	#	mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
+	#	print "----------------"
 
+	events = getECCUEvents(sess, fromtime, eventsSelector)
 	for e in events:
-		print e
-		print "-- Annotation --"
-		print "Title: " + e.getAnnotationTitle()
-		print "Text: " + e.getAnnotationText()
-		print "Start: " + e.getEventTime()
-		mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventTime())
-		print "----------------"
-
+		l.debug('The following annotation will be sent to mPulse API:')
+		l.debug("  Title: " + e.getAnnotationTitle())
+		l.debug("   Text: " + e.getAnnotationText())
+		ts = int(e.getEventStartTime()) / 1000
+		l.debug("  Start: " + str(ts) + " (" + datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S') + ")")
+		ts = int(e.getEventEndTime()) / 1000
+		l.debug("    End: " + str(ts) + " (" + datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S') + ")")
+	#	mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
 
 
 if __name__ == "__main__":
