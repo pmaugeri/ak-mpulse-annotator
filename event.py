@@ -132,7 +132,7 @@ class EventViewerEvent(Event):
 class FastPurgeEvent(EventViewerEvent):
 
 	def __init__(self, eventId = None):
-		Event.__init__(self)
+		EventViewerEvent.__init__(self)
 
 	def matchCriteria(self, criteria):
 		Event.matchCriteria(self, criteria)
@@ -154,7 +154,7 @@ class FastPurgeEvent(EventViewerEvent):
 		return self.purgeResponse
 
 	def parseJson(self, json):
-		Event.parseJson(self, json)
+		EventViewerEvent.parseJson(self, json)
 		eventData = json['eventData']
 		for kv in eventData:
 			k = kv['key']
@@ -169,7 +169,7 @@ class FastPurgeEvent(EventViewerEvent):
 				self.purgeResponse = v
 
 	def __str__(self):
-		return Event.__str__(self) + \
+		return EventViewerEvent.__str__(self) + \
 				"\n      purgeAction: " + str(self.purgeAction) + \
 				"\n     purgeNetwork: " + str(self.purgeNetwork) + \
 				"\n     purgeRequest: " + str(self.purgeRequest) + \
@@ -182,13 +182,15 @@ class FastPurgeEvent(EventViewerEvent):
 		return "Purge request on " + self.purgeNetwork + " network: " + self.purgeRequest
 
 
+
+
 class PropertyManagerEvent(EventViewerEvent):
 
 	def __init__(self, eventId = None):
-		Event.__init__(self)
+		EventViewerEvent.__init__(self)
 
 	def matchCriteria(self, criteria):
-		Event.matchCriteria(self, criteria)
+		EventViewerEvent.matchCriteria(self, criteria)
 		if criteria == '':
 			return True
 		for prop in criteria.split(';'):
@@ -197,7 +199,7 @@ class PropertyManagerEvent(EventViewerEvent):
 		return False
 
 	def parseJson(self, json):
-		Event.parseJson(self, json)
+		EventViewerEvent.parseJson(self, json)
 		eventData = json['eventData']
 		for kv in eventData:
 			k = kv['key']
@@ -210,7 +212,7 @@ class PropertyManagerEvent(EventViewerEvent):
 				self.username = v
 
 	def __str__(self):
-		return Event.__str__(self) + \
+		return EventViewerEvent.__str__(self) + \
 				"\n     propertyName: " +  str(self.propertyName) + \
 				"\n  propertyVersion: " +  str(self.propertyVersion) + \
 				"\n         username: " +  str(self.username)
