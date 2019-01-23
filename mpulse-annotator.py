@@ -245,15 +245,13 @@ def main(argv):
 	#sess.auth = EdgeGridAuth.from_edgerc(edgerc, edgercSection)
 	sess.auth = EdgeGridAuth(client_token = clientToken, client_secret = clientSecret, access_token = accessToken)
 	
-	#events = getEventViewerEvents(sess, fromtime, eventsSelector)
-	#for e in events:
-	#	print e
-	#	print "-- Annotation --"
-	#	print "Title: " + e.getAnnotationTitle()
-	#	print "Text: " + e.getAnnotationText()
-	#	print "Start: " + e.getEventStartTime()
+	events = getEventViewerEvents(sess, fromtime, eventsSelector)
+	for e in events:
+		l.debug('The following annotation will be sent to mPulse API:')
+		l.debug('  Title: ' + e.getAnnotationTitle())
+		l.debug('   Text: ' + e.getAnnotationText())
+		l.debug('  Start: ' + e.getEventStartTime())
 	#	mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
-	#	print "----------------"
 
 	events = getECCUEvents(sess, fromtime, eventsSelector)
 	for e in events:
