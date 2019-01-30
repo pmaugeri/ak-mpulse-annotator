@@ -3,7 +3,9 @@
 import sys, getopt
 import requests
 from akamai.edgegrid import EdgeGridAuth, EdgeRc
-from urlparse import urljoin
+# python2
+# from urlparse import urljoin
+from urllib.parse import urljoin
 from event import Event, FastPurgeEvent, PropertyManagerEvent, EccuEvent
 from mpulseapihandler import MPulseAPIHandler
 from datetime import datetime
@@ -209,11 +211,11 @@ def main(argv):
 	try:
 	  opts, args = getopt.getopt(argv,"hu:c:s:o:t:a:m:",["baseurl=","clienttoken", "clientsecret","accesstoken","fromtime=","apitoken","mpulsetenant"])
 	except getopt.GetoptError:
-	  print 'mpulse-annotator.py -u <baseurl> -c <clienttoken> -s <clientsecret> -o <accesstoken> -t <fromtime> -a <apitoken> -m <mpulsetenant>'
+	  print('mpulse-annotator.py -u <baseurl> -c <clienttoken> -s <clientsecret> -o <accesstoken> -t <fromtime> -a <apitoken> -m <mpulsetenant>')
 	  sys.exit(2)
 	for opt, arg in opts:
 	  if opt == '-h':
-	     print 'mpulse-annotator.py -u <baseurl> -c <clienttoken> -s <clientsecret> -o <accesstoken> -t <fromtime> -a <apitoken> -m <mpulsetenant>'
+	     print('mpulse-annotator.py -u <baseurl> -c <clienttoken> -s <clientsecret> -o <accesstoken> -t <fromtime> -a <apitoken> -m <mpulsetenant>')
 	     sys.exit()
 	  elif opt in ("-u", "--baseurl"):
 	     baseUrl = 'https://%s' % arg
@@ -245,24 +247,24 @@ def main(argv):
 	#sess.auth = EdgeGridAuth.from_edgerc(edgerc, edgercSection)
 	sess.auth = EdgeGridAuth(client_token = clientToken, client_secret = clientSecret, access_token = accessToken)
 	
-	events = getEventViewerEvents(sess, fromtime, eventsSelector)
-	for e in events:
-		l.debug('The following annotation will be sent to mPulse API:')
-		l.debug('  Title: ' + e.getAnnotationTitle())
-		l.debug('   Text: ' + e.getAnnotationText())
-		l.debug('  Start: ' + e.getEventStartTime())
-	#	mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
+	#events = getEventViewerEvents(sess, fromtime, eventsSelector)
+	#for e in events:
+	#	l.debug('The following annotation will be sent to mPulse API:')
+	#	l.debug('  Title: ' + e.getAnnotationTitle())
+	#	l.debug('   Text: ' + e.getAnnotationText())
+	#	l.debug('  Start: ' + e.getEventStartTime())
+	##	mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
 
 	events = getECCUEvents(sess, fromtime, eventsSelector)
 	for e in events:
 		l.debug('The following annotation will be sent to mPulse API:')
 		l.debug("  Title: " + e.getAnnotationTitle())
 		l.debug("   Text: " + e.getAnnotationText())
-		ts = int(e.getEventStartTime()) / 1000
+		ts = int(e.getEventStartTime())
 		l.debug("  Start: " + str(ts) + " (" + datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S') + ")")
-		ts = int(e.getEventEndTime()) / 1000
+		ts = int(e.getEventEndTime())
 		l.debug("    End: " + str(ts) + " (" + datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S') + ")")
-	#	mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
+		#mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime(), e.getEventEndTime())
 
 
 if __name__ == "__main__":

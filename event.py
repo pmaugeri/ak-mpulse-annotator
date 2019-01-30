@@ -231,29 +231,10 @@ class EccuEvent(Event):
 
 
 	def parseJson(self, json):
-		""" Parse a JSON object containing an ECCU event description.
+		"""Parse a JSON object containing an ECCU event description.
 
-		Example of an ECCU Event as returned by Enhanced Content Control Utility API v1:
-
-	        {
-	            "requestId": 275069883,
-	            "propertyName": "fr.louisvuitton.com",
-	            "propertyType": "HOST_HEADER",
-	            "propertyNameExactMatch": true,
-	            "notes": "ECCU Request using EdgeControl",
-	            "status": "SUCCEEDED",
-	            "statusMessage": "File successfully deployed to Akamai's network",
-	            "extendedStatusMessage": "File successfully deployed to Akamai network (Succeeded)",
-	            "statusUpdateDate": "2019-01-22T09:28:09.000+0000",
-	            "statusUpdateEmails": [
-	                "nicolas.riou@louisvuitton.com"
-	            ],
-	            "requestDate": "2019-01-22T09:10:08.000+0000",
-	            "requestor": "nicolas.riou@louisvuitton.com"
-	        }
-
-			:param json: the Event to be parsed
-			:type json: a python JSON object
+		:param json: the Event to be parsed
+		:type json: a python JSON object
 	    """
 		self.eventId = str(json['requestId'])
 		self.propertyName = json['propertyName']
@@ -266,18 +247,16 @@ class EccuEvent(Event):
 		
 		# parse statusUpdateDate
 		epoch_time = json['statusUpdateDate']
-		#dt = datetime.datetime.strptime(epoch_time, "%Y-%m-%dT%H:%M:%S.%f")		
-		dt = dateutil.parser.parse(epoch_time)   # python 2.7
-		self.eventEndTime = str(int(dt.strftime("%s")) * 1000)
-		
+		date_time_obj = datetime.datetime.strptime(epoch_time, '%Y-%m-%dT%H:%M:%S.%f%z')
+		self.eventEndTime = str(int(date_time_obj.timestamp()))
+
 		self.statusUpdateEmails = json['statusUpdateEmails']
 
 		# parse requestDate
 		epoch_time = json['requestDate']
-		#dt = datetime.datetime.strptime(epoch_time, "%Y-%m-%dT%H:%M:%S.%f")		
-		dt = dateutil.parser.parse(epoch_time)   # python 2.7
-		self.eventTime = str(int(dt.strftime("%s")) * 1000)
-		
+		date_time_obj = datetime.datetime.strptime(epoch_time, '%Y-%m-%dT%H:%M:%S.%f%z')
+		self.eventTime = str(int(date_time_obj.timestamp()))
+
 		self.requestor = json['requestor']
 
 
