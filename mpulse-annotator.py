@@ -255,13 +255,13 @@ def main(argv):
 	#sess.auth = EdgeGridAuth.from_edgerc(edgerc, edgercSection)
 	sess.auth = EdgeGridAuth(client_token = clientToken, client_secret = clientSecret, access_token = accessToken)
 	
-	#events = getEventViewerEvents(sess, fromtime, eventsSelector)
-	#for e in events:
-	#	l.debug('The following annotation will be sent to mPulse API:')
-	#	l.debug('  Title: ' + e.getAnnotationTitle())
-	#	l.debug('   Text: ' + e.getAnnotationText())
-	#	l.debug('  Start: ' + e.getEventStartTime())
-	##	mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
+	events = getEventViewerEvents(sess, fromtime, eventsSelector)
+	for e in events:
+		l.debug('The following annotation will be sent to mPulse API:')
+		l.debug('  Title: ' + e.getAnnotationTitle())
+		l.debug('   Text: ' + e.getAnnotationText())
+		l.debug('  Start: ' + e.getEventStartTime())
+		mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
 
 	date_time_obj = datetime.datetime.strptime(fromtime + '.000+0000', '%Y-%m-%dT%H:%M:%S.%f%z')
 	fromtimeTS = str(int(date_time_obj.timestamp()))
