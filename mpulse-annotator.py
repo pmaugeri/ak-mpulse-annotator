@@ -8,7 +8,8 @@ from akamai.edgegrid import EdgeGridAuth, EdgeRc
 from urllib.parse import urljoin
 from event import Event, FastPurgeEvent, PropertyManagerEvent, EccuEvent
 from mpulseapihandler import MPulseAPIHandler
-from datetime import datetime
+import datetime
+import dateutil.parser
 import sys
 import json
 import logging
@@ -95,20 +96,29 @@ def parseEvents(json_object, eventsSelector):
 				events.append(e)
 	return events
 
-def parseEccuEvents(json_object, eventsSelector):
+def parseEccuEvents(json_object, fromTimeStamp, eventsSelector):
 	events = []
 	for event in json_object:
 		eventDefinitionId = EVENTS_SELECTOR_ECCU
 		if eventDefinitionId in eventsSelector:
 			e = eventsSelector[eventDefinitionId][0]() # Instanciate object using dynamic class name
 			e.parseJson(event)
-			if e.matchCriteria(eventsSelector[eventDefinitionId][1]):
-				events.append(e)
+			if e.getEventStartTime() >= fromTimeStamp:
+				if e.matchCriteria(eventsSelector[eventDefinitionId][1]):
+					events.append(e)
 	return events
 
 
 def getECCUEvents(sess, start, eventsSelector):
 	""" Query the ECCU API and return a list of Event objects
+	
+	:param sess: a session to send HTTP request to EventViewer API.
+	:type sess: Session
+	:param start: the timestamp from which events should be selected 
+	:type start: a string with a unix timestamp (since January 1st, 1970 at UTC)
+	:param eventsSelector:
+	:type eventsSelector:
+	:rtype: a Dictionnary of Event objects
 	"""
 	global l
 	global baseUrl
@@ -122,7 +132,7 @@ def getECCUEvents(sess, start, eventsSelector):
 	if (result.status_code == 200):
 		data = result.json()
 		l.info(str(len(data['requests'])) + " event(s) returned")
-		selectedEvents = parseEccuEvents(data['requests'], eventsSelector)
+		selectedEvents = parseEccuEvents(data['requests'], start, eventsSelector)
 		events = events + selectedEvents
 
 	l.info("Total: " + str(len(events)) + " event(s) selected and parsed after start date '" + start + "'")
@@ -132,7 +142,7 @@ def getECCUEvents(sess, start, eventsSelector):
 
 def getEventViewerEvents(sess, start, eventsSelector):
 	""" Query EventCenter API and return a list of Event objects.
-	:param sess: a session to send HTTP request to PAPI.
+	:param sess: a session to send HTTP request to EventViewer API.
 	:type sess: Session
 	:param start: start date after which the events should be returned (e.g. 2018-12-13T15:00:00)
 	:returns: the list of events founds
@@ -197,9 +207,6 @@ def main(argv):
 	initLogger()
 	l.info("mpulse-annotator is starting...")
 
-
-
-
 	# Read and parse the command line arguments
 	baseUrl = ''       # -u command line argument
 	clientToken = ''   # -c command line argument
@@ -227,6 +234,7 @@ def main(argv):
 	     accessToken = arg
 	  elif opt in ("-t", "--fromtime"):
 	     fromtime = arg
+	     l.info('events will be filtered starting from ' + fromtime)
 	  elif opt in ("-a", "--apitoken"):
 	     apitoken = arg
 	     l.info("using mPulse API token: " + apitoken)
@@ -255,24 +263,23 @@ def main(argv):
 	#	l.debug('  Start: ' + e.getEventStartTime())
 	##	mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
 
-	events = getECCUEvents(sess, fromtime, eventsSelector)
+	date_time_obj = datetime.datetime.strptime(fromtime + '.000+0000', '%Y-%m-%dT%H:%M:%S.%f%z')
+	fromtimeTS = str(int(date_time_obj.timestamp()))
+	events = getECCUEvents(sess, fromtimeTS, eventsSelector)
 	for e in events:
 		l.debug('The following annotation will be sent to mPulse API:')
 		l.debug("  Title: " + e.getAnnotationTitle())
 		l.debug("   Text: " + e.getAnnotationText())
-		ts = int(e.getEventStartTime())
-		l.debug("  Start: " + str(ts) + " (" + datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S') + ")")
-		ts = int(e.getEventEndTime())
-		l.debug("    End: " + str(ts) + " (" + datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S') + ")")
-		#mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime(), e.getEventEndTime())
+		ts = e.getEventStartTime()
+		l.debug("  Start: " + ts + " (" + datetime.datetime.utcfromtimestamp(int(ts)).strftime('%Y-%m-%d %H:%M:%S') + " UTC)")
+		if e.getEventEndTime() is not None:
+			ts = e.getEventEndTime()
+			l.debug("    End: " + ts + " (" + datetime.datetime.utcfromtimestamp(int(ts)).strftime('%Y-%m-%d %H:%M:%S') + " UTC)")
+			mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime(), e.getEventEndTime())
+		else:
+			print()
+			mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
 
 
 if __name__ == "__main__":
    main(sys.argv[1:])
-
-
-
-
-
-
-
