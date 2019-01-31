@@ -208,21 +208,22 @@ def main(argv):
 	l.info("mpulse-annotator is starting...")
 
 	# Read and parse the command line arguments
-	baseUrl = ''       # -u command line argument
-	clientToken = ''   # -c command line argument
-	clientSecret = ''  # -s command line argument
-	accessToken = ''   # -o command line argument
-	fromtime = ''      # -t command line argument
-	apitoken = ''      # -a command line argument
-	mpulsetenant = ''  # -m command line argument
+	baseUrl = ''				# -u command line argument
+	clientToken = ''			# -c command line argument
+	clientSecret = ''			# -s command line argument
+	accessToken = ''			# -o command line argument
+	fromtime = ''				# -t command line argument
+	apitoken = ''      			# -a command line argument
+	mpulsetenant = ''			# -m command line argument
+	eventsSelectorFile = None	# -f command line argument
 	try:
-	  opts, args = getopt.getopt(argv,"hu:c:s:o:t:a:m:",["baseurl=","clienttoken", "clientsecret","accesstoken","fromtime=","apitoken","mpulsetenant"])
+	  opts, args = getopt.getopt(argv,"hu:c:s:o:t:a:m:f:",["baseurl","clienttoken", "clientsecret","accesstoken","fromtime=","apitoken","mpulsetenant","eventsselector"])
 	except getopt.GetoptError:
-	  print('mpulse-annotator.py -u <baseurl> -c <clienttoken> -s <clientsecret> -o <accesstoken> -t <fromtime> -a <apitoken> -m <mpulsetenant>')
+	  print('mpulse-annotator.py -u <baseurl> -c <clienttoken> -s <clientsecret> -o <accesstoken> -t <fromtime> -a <apitoken> -m <mpulsetenant> -f <events-selector-file>')
 	  sys.exit(2)
 	for opt, arg in opts:
 	  if opt == '-h':
-	     print('mpulse-annotator.py -u <baseurl> -c <clienttoken> -s <clientsecret> -o <accesstoken> -t <fromtime> -a <apitoken> -m <mpulsetenant>')
+	     print('mpulse-annotator.py -u <baseurl> -c <clienttoken> -s <clientsecret> -o <accesstoken> -t <fromtime> -a <apitoken> -m <mpulsetenant> -f <events-selector-file>')
 	     sys.exit()
 	  elif opt in ("-u", "--baseurl"):
 	     baseUrl = 'https://%s' % arg
@@ -241,13 +242,20 @@ def main(argv):
 	  elif opt in ("-m", "--mpulsetenant"):
 	     mpulsetenant = arg
 	     l.info("using mPulse tenant: " + mpulsetenant)
+	  elif opt in ("-f", "--eventsselector"):
+	     eventsSelectorFile = arg
+	     l.info("using events selector file: " + eventsSelectorFile)
+
+
 
 	# Get a mPulse API handler and retrieve a security token valid for this session
 	mpulse = MPulseAPIHandler(l)
 	mpulsetoken = mpulse.getSecurityToken(apitoken, mpulsetenant)
 
 	# Create a dictionary to select events during parsing of API call responses
-	l.info('loading events selector...')
+	if eventsSelectorFile is None:
+		eventsSelectorFile = EVENTS_SELECTOR_FILE
+	l.info('loading events selector from file ' + eventsSelectorFile)
 	eventsSelector = parseEventsSelector(EVENTS_SELECTOR_FILE)
 
 	sess = requests.Session()
