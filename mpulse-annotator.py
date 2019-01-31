@@ -2,20 +2,18 @@
 
 import sys, getopt
 import requests
-from akamai.edgegrid import EdgeGridAuth, EdgeRc
-# python2
-# from urlparse import urljoin
-from urllib.parse import urljoin
-from event import Event, FastPurgeEvent, PropertyManagerEvent, EccuEvent
-from mpulseapihandler import MPulseAPIHandler
-import datetime
-import dateutil.parser
 import sys
 import json
 import logging
 import time
-from logging.handlers import RotatingFileHandler
 import csv
+import datetime
+import dateutil.parser
+from akamai.edgegrid import EdgeGridAuth, EdgeRc
+from urllib.parse import urljoin
+from event import Event, FastPurgeEvent, PropertyManagerEvent, EccuEvent
+from mpulseapihandler import MPulseAPIHandler
+from logging.handlers import RotatingFileHandler
 
 
 # Default filename for logger
@@ -79,7 +77,7 @@ def parseEventsSelector(csvfile):
 
 
 def parseEvents(json_object, eventsSelector):
-	""" Parse a JSON object with a list of events.
+	""" Parse a JSON object with a list of events obtained from EventViewer API.
 	:param json_object: a JSON object that contains the array of events as returned by EventViewer API
 	:type json_object: a native Python JSON object
 	:param eventsSelector: a dictionary to select events during parsing
@@ -97,6 +95,15 @@ def parseEvents(json_object, eventsSelector):
 	return events
 
 def parseEccuEvents(json_object, fromTimeStamp, eventsSelector):
+	""" Parse a JSON object with a list of events obtained from ECCU Event API.
+	:param json_object: a JSON object that contains the array of events as returned by ECCU API
+	:type json_object: a native Python JSON object
+	:param fromTimeStamp: timestamp to select events (only events started after this timestamp will be returned)
+	:type fromTimeStamp: an int
+	:param eventsSelector: a dictionary to select events during parsing
+	:type eventsSelector: a python dictionary type
+	:returns: an array of Event objects
+	"""
 	events = []
 	for event in json_object:
 		eventDefinitionId = EVENTS_SELECTOR_ECCU
@@ -194,11 +201,6 @@ def getEventViewerEvents(sess, start, eventsSelector):
 
 
 
-
-
-
-
-
 def main(argv):
 	
 	global l
@@ -285,7 +287,6 @@ def main(argv):
 			l.debug("    End: " + ts + " (" + datetime.datetime.utcfromtimestamp(int(ts)).strftime('%Y-%m-%d %H:%M:%S') + " UTC)")
 			mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime(), e.getEventEndTime())
 		else:
-			print()
 			mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
 
 
