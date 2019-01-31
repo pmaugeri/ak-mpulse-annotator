@@ -51,7 +51,6 @@ class MPulseAPIHandler:
 		self.logger.info("adding new annotation: " + payload)	
 
 		self.logger.info("WARNING: mpulse API handler disabled!")
-		return
 		url = "https://mpulse.soasta.com/concerto/mpulse/api/annotations/v1"
 		result = requests.post(url, data = payload, headers={'Content-Type':'application/json', 'X-Auth-Token': token })
 		if (result.status_code == 200):
