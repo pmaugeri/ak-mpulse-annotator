@@ -15,7 +15,7 @@ See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
 
-* Python v2.7.10 or higher
+* Python v3.6 or higher
 * Akamai OPEN Edgegrid for Python - [AkamaiOPEN-edgegrid-python](https://github.com/akamai/AkamaiOPEN-edgegrid-python)
 * an Akamai OPEN Client API with a read access priviledge to Event Viewer API. 
 * an Akamai mPulse tenant and user account that has API access enable
