@@ -3,6 +3,10 @@ import dateutil.parser
 
 
 class Event:
+
+	TAG_EVENT = "Akamai"
+
+
 	"""
 		Generic parent event class with mandatory methods to create, 
 		parse and match events, and. to create mPulse annotation.
@@ -10,6 +14,7 @@ class Event:
 
 	def __init__(self, eventId = None):
 		self.eventId = eventId
+		self.tags = []
 
 	def matchCriteria(self, criteria):
 		return True
@@ -50,7 +55,29 @@ class Event:
 		"""
 		return None
 
+	def addTag(self, tag):
+		"""Add a new tag to this event.
+		:param tag: the new tag to be added
+		:type tag: a string containing the new tag
+		"""
+		self.tags.append(tag)
 
+	def getTags(self):
+		"""Return a List of tags
+		:returns: a List object with the event tags
+		"""
+		return self.tags
+
+	def getTagsText(self):
+		"""Returns a string representation of the tags (e.g. #Akamai #FastPurge)
+		:returns: a String object
+		"""
+		text = ""
+		for tag in self.tags:
+			text = text + "#" + tag + " "
+		if text != "":
+			text = text[:-1]
+		return text
 
 
 class EventViewerEvent(Event):
@@ -131,8 +158,14 @@ class EventViewerEvent(Event):
 
 class FastPurgeEvent(EventViewerEvent):
 
+
+	TAG_FAST_PURGE_EVENT = "FastPurge"
+
+
 	def __init__(self, eventId = None):
 		EventViewerEvent.__init__(self)
+		self.addTag(Event.TAG_EVENT)
+		self.addTag(self.TAG_FAST_PURGE_EVENT)
 
 	def matchCriteria(self, criteria):
 		Event.matchCriteria(self, criteria)
@@ -179,15 +212,22 @@ class FastPurgeEvent(EventViewerEvent):
 		"""Return the annotation text corresponding to this event and ready to be used in mPulse Annotation API.
 		:returns: a python String object
 		"""		
-		return "Purge request on " + self.purgeNetwork + " network: " + self.purgeRequest
+		return "Purge request on " + self.purgeNetwork + " network: " + self.purgeRequest + " " + self.getTagsText()
+
 
 
 
 
 class PropertyManagerEvent(EventViewerEvent):
 
+
+	TAG_PROPERTY_MANAGER_EVENT = "PropertyManager"
+
+
 	def __init__(self, eventId = None):
 		EventViewerEvent.__init__(self)
+		self.addTag(Event.TAG_EVENT)
+		self.addTag(self.TAG_PROPERTY_MANAGER_EVENT)
 
 	def matchCriteria(self, criteria):
 		EventViewerEvent.matchCriteria(self, criteria)
@@ -221,14 +261,19 @@ class PropertyManagerEvent(EventViewerEvent):
 		"""Return the annotation text corresponding to this event and ready to be used in mPulse Annotation API.
 		:returns: a python String object
 		"""		
-		return "" + self.propertyName + " v" + self.propertyVersion
+		return "" + self.propertyName + " v" + self.propertyVersion + " " + self.getTagsText()
+
+
 
 
 class EccuEvent(Event):
 
+	TAG_ECCU_EVENT = "ECCU"
+
 	def __init__(self, eventId = None):
 		Event.__init__(self)
-
+		self.addTag(Event.TAG_EVENT)
+		self.addTag(self.TAG_ECCU_EVENT)
 
 	def parseJson(self, json):
 		"""Parse a JSON object containing an ECCU event description.
@@ -285,7 +330,7 @@ class EccuEvent(Event):
 		"""Return the annotation text corresponding to this event and ready to be used in mPulse Annotation API.
 		:returns: a python String object
 		"""		
-		return "ECCU request on property " + self.propertyName + " requested by " + self.requestor + "."
+		return "ECCU request on property " + self.propertyName + " requested by " + self.requestor + "." + " " + self.getTagsText()
 
 	def matchCriteria(self, criteria):
 		Event.matchCriteria(self, criteria)
