@@ -79,6 +79,10 @@ class Event:
 			text = text[:-1]
 		return text
 
+	def clearTags(self):
+		"""Remove all the tags set (and preset by the constructor) for this Event.
+		"""
+		self.tags = []
 
 class EventViewerEvent(Event):
 	"""
@@ -275,7 +279,7 @@ class EccuEvent(Event):
 		self.addTag(Event.TAG_EVENT)
 		self.addTag(self.TAG_ECCU_EVENT)
 
-	def parseJson(self, json):
+	def parseJson(self, json):	
 		"""Parse a JSON object containing an ECCU event description.
 
 		:param json: the Event to be parsed
