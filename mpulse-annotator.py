@@ -113,6 +113,7 @@ def parseEccuEvents(json_object, fromTimeStamp, eventsSelector):
 			if e.getEventStartTime() >= fromTimeStamp:
 				if e.matchCriteria(eventsSelector[eventDefinitionId][1]):
 					events.append(e)
+					e.clearTags()
 	return events
 
 
@@ -265,6 +266,7 @@ def main(argv):
 	#sess.auth = EdgeGridAuth.from_edgerc(edgerc, edgercSection)
 	sess.auth = EdgeGridAuth(client_token = clientToken, client_secret = clientSecret, access_token = accessToken)
 	
+	events = []
 	events = getEventViewerEvents(sess, fromtime, eventsSelector)
 	for e in events:
 		l.debug('The following annotation will be sent to mPulse API:')
@@ -288,6 +290,8 @@ def main(argv):
 			mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime(), e.getEventEndTime())
 		else:
 			mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
+
+	l.info("mpulse-annotator is stopping...")
 
 
 if __name__ == "__main__":
