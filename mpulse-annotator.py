@@ -219,8 +219,9 @@ def main(argv):
 	apitoken = ''      			# -a command line argument
 	mpulsetenant = ''			# -m command line argument
 	eventsSelectorFile = None	# -f command line argument
+	simulateAdd = False         # -x command line argument
 	try:
-	  opts, args = getopt.getopt(argv,"hu:c:s:o:t:a:m:f:",["baseurl","clienttoken", "clientsecret","accesstoken","fromtime=","apitoken","mpulsetenant","eventsselector"])
+	  opts, args = getopt.getopt(argv,"hu:c:s:o:t:a:m:f:x",["baseurl","clienttoken", "clientsecret","accesstoken","fromtime=","apitoken","mpulsetenant","eventsselector","simulate"])
 	except getopt.GetoptError:
 	  print('mpulse-annotator.py -u <baseurl> -c <clienttoken> -s <clientsecret> -o <accesstoken> -t <fromtime> -a <apitoken> -m <mpulsetenant> -f <events-selector-file>')
 	  sys.exit(2)
@@ -248,11 +249,14 @@ def main(argv):
 	  elif opt in ("-f", "--eventsselector"):
 	     eventsSelectorFile = arg
 	     l.info("using events selector file: " + eventsSelectorFile)
-
+	  elif opt in ("-x"):
+	  	 simulateAdd = True
 
 
 	# Get a mPulse API handler and retrieve a security token valid for this session
-	mpulse = MPulseAPIHandler(l)
+	if simulateAdd:
+		l.info('[SIMULATE] Important: No annotation will be added to mPulse dashboard (simulation mode)')
+	mpulse = MPulseAPIHandler(l, simulateAdd)
 	mpulsetoken = mpulse.getSecurityToken(apitoken, mpulsetenant)
 
 	# Create a dictionary to select events during parsing of API call responses

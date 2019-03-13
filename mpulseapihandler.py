@@ -4,8 +4,9 @@ import json
 
 class MPulseAPIHandler:
 
-	def __init__(self, logger):
+	def __init__(self, logger, simulate = False):
 		self.logger = logger
+		self.simulate = simulate
 
 
 	def getSecurityToken(self, apiToken, tenant):
@@ -48,6 +49,9 @@ class MPulseAPIHandler:
 			payload = "{\"title\":\"" + title + "\", \"start\": \"" + str(start) + "\", \"text\":\"" + text + "\"}"
 		else:
 			payload = "{\"title\":\"" + title + "\", \"start\": \"" + str(start) + "\", \"end\":\"" + str(end) + "\", \"text\":\"" + text + "\"}"
+		if self.simulate:
+			self.logger.info("[SIMULATE] adding new annotation: " + payload)	
+			return
 		self.logger.info("adding new annotation: " + payload)	
 
 		#self.logger.info("WARNING: mpulse API handler disabled!")

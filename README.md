@@ -66,6 +66,7 @@ You can invoke the mpulse-annotator with the following command line parameters:
 * **-a:** the mPulse API token
 * **-m:** mPulse tenant name
 * **-f:** path and file name to events selector file
+* **-x:** this will prevent any annotation to be added to mPulse dashboard (simulation mode for testing purpose)
 
 Example ('X' characters are hidden characters):
 
