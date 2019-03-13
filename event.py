@@ -265,7 +265,7 @@ class PropertyManagerEvent(EventViewerEvent):
 		"""Return the annotation text corresponding to this event and ready to be used in mPulse Annotation API.
 		:returns: a python String object
 		"""		
-		return "" + self.propertyName + " v" + self.propertyVersion + " " + self.getTagsText()
+		return "" + self.propertyName + " v" + self.propertyVersion + " activated by " + self.username + " " + self.getTagsText()
 
 
 
