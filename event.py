@@ -1,5 +1,12 @@
 import datetime
 import dateutil.parser
+from datetime import tzinfo, timedelta
+
+from timezones import LocalTimezone
+from timezones import UTCTimezone
+
+LocalTZ = LocalTimezone()
+UTCTZ = UTCTimezone()
 
 
 class Event:
@@ -98,7 +105,8 @@ class EventViewerEvent(Event):
 		"""
 		self.eventId = json['eventId']
 		epoch_time = json['eventTime']
-		dt = datetime.datetime.strptime(epoch_time, "%Y-%m-%dT%H:%M:%S.%fZ")		
+		#dt = datetime.datetime.strptime(epoch_time, "%Y-%m-%dT%H:%M:%S.%fZ")		
+		dt = datetime.datetime.strptime(epoch_time, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=UTCTZ).astimezone(LocalTZ)
 		self.eventTime = str(int(dt.strftime("%s")) * 1000)
 		self.eventTypeId = json['eventType']['eventTypeId']
 		self.eventTypeName = json['eventType']['eventTypeName']
