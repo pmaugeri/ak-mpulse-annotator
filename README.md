@@ -24,6 +24,20 @@ See deployment for notes on how to deploy the project on a live system.
 
 Once project is downloaded and configured (see *Configuration* section below), there is no additional installation instruction needed.
 
+### Docker
+
+This project can be run within using a builtin Docker container image. The image is based on Alpine Linux, has a small footprint and comes with all required libraries.
+
+This is how to build the Docker image:
+```
+docker build -t pmaugeri/ak-mpulse-annotator .
+```
+
+Assuming you have your events-selector.csv file in the local folder /root/events-selector.csv, you can then run a new container image that mounts your configuration file:
+```
+$ docker run --mount type=bind,source=/root/events-selector.csv,target=/root/ak-mpulse-annotator/events-selector.csv  -it pmaugeri/ak-mpulse-annotator
+```
+
 ### Configuration
 
 **File events-selector.csv**
