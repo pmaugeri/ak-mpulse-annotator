@@ -15,7 +15,7 @@ RUN apk update && \
 	pip3 install --upgrade pip && \
 	pip3 install --upgrade setuptools && \
 	apk add build-base libffi-dev coreutils openssl-dev python3-dev nodejs bind-tools curl jq && \
-	pip3 install --no-cache-dir edgegrid-python
+	pip3 install --no-cache-dir python-dateutil
 
 # Embeds mPulse Annotator python files to docker image
 RUN mkdir /root/ak-mpulse-annotator
