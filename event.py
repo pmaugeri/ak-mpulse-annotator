@@ -229,6 +229,64 @@ class FastPurgeEvent(EventViewerEvent):
 
 
 
+class FastPurgeUrlEvent(EventViewerEvent):
+
+	TAG_FAST_PURGE_EVENT = "FastPurgeURL"
+
+	def __init__(self, eventId = None):
+		EventViewerEvent.__init__(self)
+		self.addTag(Event.TAG_EVENT)
+		self.addTag(self.TAG_FAST_PURGE_EVENT)
+
+	def matchCriteria(self, criteria):
+		Event.matchCriteria(self, criteria)
+		for url in criteria.split(';'):
+			if url in self.purgeRequest:
+				return True
+		return False
+
+	def getPurgeAction(self):
+		return self.purgeAction
+
+	def getPurgeNetwork(self):
+		return self.purgeNetwork
+
+	def getPurgeRequest(self):
+		return self.purgeRequest
+
+	def getPurgeResponse(self):
+		return self.purgeResponse
+
+	def parseJson(self, json):
+		EventViewerEvent.parseJson(self, json)
+		eventData = json['eventData']
+		for kv in eventData:
+			k = kv['key']
+			v = kv['value']
+			if k == 'Purge action':
+				self.purgeAction = v
+			if k == 'Purge network':
+				self.purgeNetwork = v
+			if k == 'Purge request':
+				self.purgeRequest = v
+			if k == 'Purge response':
+				self.purgeResponse = v
+
+	def __str__(self):
+		return EventViewerEvent.__str__(self) + \
+				"\n      purgeAction: " + str(self.purgeAction) + \
+				"\n     purgeNetwork: " + str(self.purgeNetwork) + \
+				"\n     purgeRequest: " + str(self.purgeRequest) + \
+				"\n    purgeResponse: " + str(self.purgeResponse)
+
+	def getAnnotationText(self):
+		"""Return the annotation text corresponding to this event and ready to be used in mPulse Annotation API.
+		:returns: a python String object
+		"""		
+		return "Purge request on network: " + self.purgeNetwork + " request: " + self.purgeRequest + " " + self.getTagsText()
+
+
+
 
 class PropertyManagerEvent(EventViewerEvent):
 
