@@ -11,7 +11,7 @@ import datetime
 import dateutil.parser
 from akamai.edgegrid import EdgeGridAuth, EdgeRc
 from urllib.parse import urljoin
-from event import Event, FastPurgeEvent, FastPurgeUrlEvent, PropertyManagerEvent, EccuEvent
+from event import Event, FastPurgeCPCodeEvent, FastPurgeUrlEvent, PropertyManagerEvent, EccuEvent
 from mpulseapihandler import MPulseAPIHandler
 from logging.handlers import RotatingFileHandler
 
@@ -67,8 +67,8 @@ def parseEventsSelector(csvfile):
 	with open(csvfile, mode='r') as infile:
 		reader = csv.reader(decomment(infile))
 		for row in reader:
-			if row[1] == 'FastPurgeEvent':
-				selector[row[0]] = [ FastPurgeEvent, row[2] ]
+			if row[1] == 'FastPurgeCPCodeEvent':
+				selector[row[0]] = [ FastPurgeCPCodeEvent, row[2] ]
 			if row[1] == 'FastPurgeUrlEvent':
 				selector[row[0]] = [ FastPurgeUrlEvent, row[2] ]
 			if row[1] == 'PropertyManagerEvent':

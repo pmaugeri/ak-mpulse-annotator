@@ -168,11 +168,13 @@ class EventViewerEvent(Event):
 		return ""
 
 
-class FastPurgeEvent(EventViewerEvent):
+class FastPurgeCPCodeEvent(EventViewerEvent):
+	""" 
+	A class used to represent a purge event by CP Code. 
+	Event definition ID: 229233
+	"""
 
-
-	TAG_FAST_PURGE_EVENT = "FastPurge"
-
+	TAG_FAST_PURGE_EVENT = "FastPurgeCPC"
 
 	def __init__(self, eventId = None):
 		EventViewerEvent.__init__(self)
