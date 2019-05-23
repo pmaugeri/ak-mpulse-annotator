@@ -10,14 +10,12 @@ UTCTZ = UTCTimezone()
 
 
 class Event:
+	"""
+	Generic parent event class with mandatory methods to create, 
+	parse and match events, and. to create mPulse annotation.
+	"""
 
 	TAG_EVENT = "Akamai"
-
-
-	"""
-		Generic parent event class with mandatory methods to create, 
-		parse and match events, and. to create mPulse annotation.
-	"""
 
 	def __init__(self, eventId = None):
 		self.eventId = eventId
@@ -93,9 +91,9 @@ class Event:
 
 class EventViewerEvent(Event):
 	"""
-		This event class inheritis from Event parent class.
-		All Akamai events that comes from EventViewer API should be instanciated 
-		below EventViewerEvent.
+	This event class inheritis from Event parent class.
+	All Akamai events that comes from EventViewer API should be instanciated 
+	below EventViewerEvent.
 	"""
 
 	def parseJson(self, json):
@@ -167,7 +165,6 @@ class EventViewerEvent(Event):
 		"""		
 		return ""
 
-
 class FastPurgeCPCodeEvent(EventViewerEvent):
 	""" 
 	A class used to represent a purge event by CP Code. 
@@ -228,10 +225,11 @@ class FastPurgeCPCodeEvent(EventViewerEvent):
 		"""		
 		return "Purge request on " + self.purgeNetwork + " network: " + self.purgeRequest + " " + self.getTagsText()
 
-
-
-
 class FastPurgeUrlEvent(EventViewerEvent):
+	""" 
+	A class used to represent a purge event by URL. 
+	Event definition ID: 894488
+	"""
 
 	TAG_FAST_PURGE_EVENT = "FastPurgeURL"
 
@@ -287,9 +285,6 @@ class FastPurgeUrlEvent(EventViewerEvent):
 		"""		
 		return "Purge request on network: " + self.purgeNetwork + " request: " + self.purgeRequest + " " + self.getTagsText()
 
-
-
-
 class PropertyManagerEvent(EventViewerEvent):
 
 
@@ -334,9 +329,6 @@ class PropertyManagerEvent(EventViewerEvent):
 		:returns: a python String object
 		"""		
 		return "" + self.propertyName + " v" + self.propertyVersion + " activated by " + self.username + " " + self.getTagsText()
-
-
-
 
 class EccuEvent(Event):
 
