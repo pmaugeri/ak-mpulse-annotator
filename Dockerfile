@@ -11,10 +11,9 @@ RUN apk add --no-cache python3 && \
 RUN apk update && \
 	apk add ca-certificates && \
 	update-ca-certificates && \
-	apk add wget && \
 	pip3 install --upgrade pip && \
 	pip3 install --upgrade setuptools && \
-	apk add build-base libffi-dev coreutils openssl-dev python3-dev nodejs bind-tools curl jq && \
+	apk add build-base libffi-dev coreutils openssl-dev python3-dev && \
 	pip3 install --no-cache-dir python-dateutil && \
 	pip3 install --no-cache-dir edgegrid-python
 
