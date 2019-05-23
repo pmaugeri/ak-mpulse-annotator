@@ -29,7 +29,6 @@ DSTDIFF = DSTOFFSET - STDOFFSET
 class LocalTimezone(tzinfo):
 
     def fromutc(self, dt):
-        print('dt: ' + str(dt))
         assert dt.tzinfo is self
         stamp = (dt - datetime(1970, 1, 1, tzinfo=self)) // SECOND
         args = _time.localtime(stamp)[:6]
