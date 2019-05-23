@@ -29,3 +29,4 @@ ENV ENV="/etc/profile"
 RUN echo "alias ll='ls -la'" >> "$ENV"
 
 WORKDIR /root/ak-mpulse-annotator
+CMD [ "/root/ak-mpulse-annotator/run.sh" ]
