@@ -21,6 +21,8 @@ RUN apk update && \
 # Embeds mPulse Annotator python files to docker image
 RUN mkdir /root/ak-mpulse-annotator
 ADD *.py /root/ak-mpulse-annotator/
+ADD run.sh /root/ak-mpulse-annotator/
+RUN chmod +x /root/ak-mpulse-annotator/run.sh
 
 # Customizations
 ENV ENV="/etc/profile"
