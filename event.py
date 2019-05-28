@@ -346,6 +346,7 @@ class EccuEvent(Event):
 		:type json: a python JSON object
 	    """
 		self.eventId = str(json['requestId'])
+		self.requestName = json['requestName']
 		self.propertyName = json['propertyName']
 		self.propertyType = json['propertyType']
 		self.propertyNameExactMatch = str(json['propertyNameExactMatch'])
@@ -368,17 +369,20 @@ class EccuEvent(Event):
 
 		self.requestor = json['requestor']
 
+	def getRequestName(self):
+		"""Return the ECCU Event request name
+		:return: a python String object
+		"""
+		return self.requestName
 
 	def getEventStartTime(self):
 		"""Return the event time in Epoch time (in milliseconds)
-		:param json: the Event to be parsed
 		:returns: event epoch time (in milliseconds)
 		"""
 		return self.eventTime
 
 	def getEventEndTime(self):
 		"""Return the event time in Epoch time (in milliseconds)
-		:param json: the Event to be parsed
 		:returns: event epoch time (in milliseconds)
 		"""
 		return self.eventEndTime
