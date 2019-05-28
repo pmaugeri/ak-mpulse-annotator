@@ -97,9 +97,12 @@ def parseEvents(json_object, eventsSelector):
 		eventDefinitionId = event['eventType']['eventDefinition']['eventDefinitionId']
 		if eventDefinitionId in eventsSelector:
 			e = eventsSelector[eventDefinitionId][0]() # Instanciate object using dynamic class name
-			e.parseJson(event)
-			if e.matchCriteria(eventsSelector[eventDefinitionId][1]):
-				events.append(e)
+			try: 
+				e.parseJson(event)
+				if e.matchCriteria(eventsSelector[eventDefinitionId][1]):
+					events.append(e)
+			except:
+				l.error('An error occured while parsing event: ' + event)
 	return events
 
 def parseEccuEvents(json_object, fromTimeStamp, eventsSelector):
