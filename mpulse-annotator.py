@@ -69,11 +69,15 @@ def parseEventsSelector(csvfile):
 		for row in reader:
 			if row[1] == 'FastPurgeCPCodeEvent':
 				selector[row[0]] = [ FastPurgeCPCodeEvent, row[2] ]
+				l.debug("Selector '" + row[1] + "' added to event selectors list with criteria '" + row[2] + "'")
 			if row[1] == 'FastPurgeUrlEvent':
+				l.debug("Selector '" + row[1] + "' added to event selectors list with criteria '" + row[2] + "'")
 				selector[row[0]] = [ FastPurgeUrlEvent, row[2] ]
 			if row[1] == 'PropertyManagerEvent':
+				l.debug("Selector '" + row[1] + "' added to event selectors list with criteria '" + row[2] + "'")
 				selector[row[0]] = [ PropertyManagerEvent, row[2] ]
 			if row[1] == 'EccuEvent':
+				l.debug("Selector '" + row[1] + "' added to event selectors list with criteria '" + row[2] + "'")
 				selector[row[0]] = [ EccuEvent, row[2] ]
 	return selector
 
@@ -275,24 +279,24 @@ def main(argv):
 	events = []
 	events = getEventViewerEvents(sess, fromtime, eventsSelector)
 	for e in events:
-		l.debug('The following annotation will be sent to mPulse API:')
-		l.debug('  Title: ' + e.getAnnotationTitle())
-		l.debug('   Text: ' + e.getAnnotationText())
-		l.debug('  Start: ' + e.getEventStartTime())
+		l.info('The following annotation will be sent to mPulse API:')
+		l.info('  Title: ' + e.getAnnotationTitle())
+		l.info('   Text: ' + e.getAnnotationText())
+		l.info('  Start: ' + e.getEventStartTime())
 		mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
 
 	date_time_obj = datetime.datetime.strptime(fromtime + '.000+0000', '%Y-%m-%dT%H:%M:%S.%f%z')
 	fromtimeTS = str(int(date_time_obj.timestamp()))
 	events = getECCUEvents(sess, fromtimeTS, eventsSelector)
 	for e in events:
-		l.debug('The following annotation will be sent to mPulse API:')
-		l.debug("  Title: " + e.getAnnotationTitle())
-		l.debug("   Text: " + e.getAnnotationText())
+		l.info('The following annotation will be sent to mPulse API:')
+		l.info("  Title: " + e.getAnnotationTitle())
+		l.info("   Text: " + e.getAnnotationText())
 		ts = e.getEventStartTime()
-		l.debug("  Start: " + ts + " (" + datetime.datetime.utcfromtimestamp(int(ts)).strftime('%Y-%m-%d %H:%M:%S') + " UTC)")
+		l.info("  Start: " + ts + " (" + datetime.datetime.utcfromtimestamp(int(ts)).strftime('%Y-%m-%d %H:%M:%S') + " UTC)")
 		if e.getEventEndTime() is not None:
 			ts = e.getEventEndTime()
-			l.debug("    End: " + ts + " (" + datetime.datetime.utcfromtimestamp(int(ts)).strftime('%Y-%m-%d %H:%M:%S') + " UTC)")
+			l.info("    End: " + ts + " (" + datetime.datetime.utcfromtimestamp(int(ts)).strftime('%Y-%m-%d %H:%M:%S') + " UTC)")
 			mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime(), e.getEventEndTime())
 		else:
 			mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
