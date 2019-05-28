@@ -286,7 +286,7 @@ def main(argv):
 		l.info('   Text: ' + e.getAnnotationText())
 		l.info('  Start: ' + e.getEventStartTime())
 		mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
-		l.info('Pause ' + ANNOTATION_CREATE_DELAY + ' seconds...')
+		l.info('Pause ' + str(ANNOTATION_CREATE_DELAY) + ' seconds...')
 		time.sleep(ANNOTATION_CREATE_DELAY)
 
 	date_time_obj = datetime.datetime.strptime(fromtime + '.000+0000', '%Y-%m-%dT%H:%M:%S.%f%z')
@@ -304,7 +304,7 @@ def main(argv):
 			mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime(), e.getEventEndTime())
 		else:
 			mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
-		l.info('Pause ' + ANNOTATION_CREATE_DELAY + ' seconds...')
+		l.info('Pause ' + str(ANNOTATION_CREATE_DELAY) + ' seconds...')
 		time.sleep(ANNOTATION_CREATE_DELAY)
 
 	l.info("mpulse-annotator is stopping...")
