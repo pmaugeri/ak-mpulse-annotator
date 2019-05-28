@@ -27,6 +27,8 @@ EVENTS_SELECTOR_ECCU         = '000001'
 EVENTS_SELECTOR_PMACTIVATION = '238252'
 EVENTS_SELECTOR_FASTPURGE    = '229233'
 
+# Delay in seconds between calls to create mPulse annotation (to avoid rate limit)
+ANNOTATION_CREATE_DELAY 	 = 20
 
 
 # Global variables
@@ -284,6 +286,8 @@ def main(argv):
 		l.info('   Text: ' + e.getAnnotationText())
 		l.info('  Start: ' + e.getEventStartTime())
 		mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
+		l.info('Pause ' + ANNOTATION_CREATE_DELAY + ' seconds...')
+		time.sleep(ANNOTATION_CREATE_DELAY)
 
 	date_time_obj = datetime.datetime.strptime(fromtime + '.000+0000', '%Y-%m-%dT%H:%M:%S.%f%z')
 	fromtimeTS = str(int(date_time_obj.timestamp()))
@@ -300,6 +304,8 @@ def main(argv):
 			mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime(), e.getEventEndTime())
 		else:
 			mpulse.addAnnotation(mpulsetoken, e.getAnnotationTitle(), e.getAnnotationText(), e.getEventStartTime())
+		l.info('Pause ' + ANNOTATION_CREATE_DELAY + ' seconds...')
+		time.sleep(ANNOTATION_CREATE_DELAY)
 
 	l.info("mpulse-annotator is stopping...")
 
