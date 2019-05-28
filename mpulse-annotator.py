@@ -117,6 +117,7 @@ def parseEccuEvents(json_object, fromTimeStamp, eventsSelector):
 		eventDefinitionId = EVENTS_SELECTOR_ECCU
 		if eventDefinitionId in eventsSelector:
 			e = eventsSelector[eventDefinitionId][0]() # Instanciate object using dynamic class name
+			l.debug('EccuEvent created with tags: ' + e.getTags(self) + ".")
 			e.parseJson(event)
 			if e.getEventStartTime() >= fromTimeStamp:
 				if e.matchCriteria(eventsSelector[eventDefinitionId][1]):
