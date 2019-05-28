@@ -346,7 +346,10 @@ class EccuEvent(Event):
 		:type json: a python JSON object
 	    """
 		self.eventId = str(json['requestId'])
-		self.requestName = json['requestName']
+		try:
+			self.requestName = json['requestName']
+		except KeyError:
+			self.requestName = None
 		self.propertyName = json['propertyName']
 		self.propertyType = json['propertyType']
 		self.propertyNameExactMatch = str(json['propertyNameExactMatch'])
