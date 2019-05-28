@@ -102,7 +102,7 @@ def parseEvents(json_object, eventsSelector):
 				if e.matchCriteria(eventsSelector[eventDefinitionId][1]):
 					events.append(e)
 			except:
-				l.error('An error occured while parsing event: ' + event)
+				l.error('An error occured while parsing event: ' + event['eventId'])
 	return events
 
 def parseEccuEvents(json_object, fromTimeStamp, eventsSelector):
@@ -126,7 +126,7 @@ def parseEccuEvents(json_object, fromTimeStamp, eventsSelector):
 					if e.matchCriteria(eventsSelector[eventDefinitionId][1]):
 						events.append(e)
 			except:
-				l.error('An error occured while parsing event: ' + event)
+				l.error('An error occured while parsing event ID: ' + event['eventId'])
 	return events
 
 
