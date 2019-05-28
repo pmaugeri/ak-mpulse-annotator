@@ -400,8 +400,12 @@ class EccuEvent(Event):
 	def getAnnotationText(self):
 		"""Return the annotation text corresponding to this event and ready to be used in mPulse Annotation API.
 		:returns: a python String object
-		"""		
-		return "ECCU request on property " + self.propertyName + " requested by " + self.requestor + "." + " " + self.getTagsText()
+		"""	
+		result = "ECCU request "
+		if self.requestName is not None:
+			result += '\'' + self.requestName + '\' '
+		result += "on property " + self.propertyName + " requested by " + self.requestor + "." + " " + self.getTagsText()
+		return result
 
 	def matchCriteria(self, criteria):
 		Event.matchCriteria(self, criteria)
