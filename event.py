@@ -372,6 +372,12 @@ class EccuEvent(Event):
 
 		self.requestor = json['requestor']
 
+	def getPropertyName(self):
+		return self.propertyName
+	
+	def setPropertyName(self, name):
+		self.propertyName = name
+
 	def getRequestName(self):
 		"""Return the ECCU Event request name
 		:return: a python String object
@@ -395,7 +401,7 @@ class EccuEvent(Event):
 		By default it returns the eventName attribute.
 		:returns: a python String object
 		"""		
-		return 'ECCU on ' + self.propertyName
+		return 'ECCU request'
 
 	def getAnnotationText(self):
 		"""Return the annotation text corresponding to this event and ready to be used in mPulse Annotation API.
