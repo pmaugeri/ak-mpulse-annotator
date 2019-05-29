@@ -159,6 +159,24 @@ def getECCUEvents(sess, start, eventsSelector):
 	l.info("Total: " + str(len(events)) + " event(s) selected and parsed after start date '" + start + "'")
 	return events
 
+def aggregateECCUEvents(events):
+	"""
+	This function will try to reduce the number of EccuEvents by aggregating the events when they share: same start/end times, and same requestor. 
+	:param events: an array of EccuEvents
+	"""
+	try:
+		for e1 in events:
+			for e2 in events:
+				# Make sure e1 and e2 are not the same
+				if e1.getEventId() != e2.getEventId():
+					# If 2 events shares same start time, end time and requestor, they can easily be merged
+					if e1.getEventStartTime() == e2.getEventStartTime() and e1.getEventEndTime() == e2.getEventEndTime() and e1.getRequestor() == e2.getRequestor():
+						l.info('Found 2 ECCU events that could be merged: "' + e1.getAnnotationText() + '" and "' + e2.getAnnotationText() + '"')				
+						propName = e1.getPropertyName() + ', ' + e2.getPropertyName()
+						e1.setPropertyName(propName)
+						events.remove(e2)
+	except:
+		l.error('An unexpected error occured while trying to aggregate ECCU Events!')
 
 
 def getEventViewerEvents(sess, start, eventsSelector):
@@ -297,6 +315,7 @@ def main(argv):
 	date_time_obj = datetime.datetime.strptime(fromtime + '.000+0000', '%Y-%m-%dT%H:%M:%S.%f%z')
 	fromtimeTS = str(int(date_time_obj.timestamp()))
 	events = getECCUEvents(sess, fromtimeTS, eventsSelector)
+	aggregateECCUEvents(events)
 	for e in events:
 		l.info('The following annotation will be sent to mPulse API:')
 		l.info("  Title: " + e.getAnnotationTitle())
