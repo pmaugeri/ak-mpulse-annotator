@@ -161,7 +161,7 @@ def getECCUEvents(sess, start, eventsSelector):
 
 def aggregateECCUEvents(events):
 	"""
-	This function will try to reduce the number of EccuEvents by aggregating the events when they share: same start/end times, and same requestor. 
+	This function will try to reduce the number of EccuEvents by aggregating the events when they share: same request name, start/end times, and same requestor. 
 	:param events: an array of EccuEvents
 	"""
 	try:
@@ -169,8 +169,8 @@ def aggregateECCUEvents(events):
 			for e2 in events:
 				# Make sure e1 and e2 are not the same
 				if e1.getEventId() != e2.getEventId():
-					# If 2 events shares same start time, end time and requestor, they can easily be merged
-					if e1.getEventStartTime() == e2.getEventStartTime() and e1.getEventEndTime() == e2.getEventEndTime() and e1.getRequestor() == e2.getRequestor():
+					# If 2 events shares same request name, start time, end time and requestor, they can easily be merged
+					if e1.getRequestName() == e2.getRequestName() and e1.getEventStartTime() == e2.getEventStartTime() and e1.getEventEndTime() == e2.getEventEndTime() and e1.getRequestor() == e2.getRequestor():
 						l.info('Found 2 ECCU events that could be merged: "' + e1.getAnnotationText() + '" and "' + e2.getAnnotationText() + '"')				
 						propName = e1.getPropertyName() + ', ' + e2.getPropertyName()
 						e1.setPropertyName(propName)
