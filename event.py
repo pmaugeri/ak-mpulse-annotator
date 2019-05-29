@@ -378,6 +378,12 @@ class EccuEvent(Event):
 	def setPropertyName(self, name):
 		self.propertyName = name
 
+	def getRequestor(self):
+		"""
+		:returns: a String object containing the user who requested this event
+		"""
+		return self.requestor
+
 	def getRequestName(self):
 		"""Return the ECCU Event request name
 		:return: a python String object
